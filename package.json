@@ -1,0 +1,27 @@
+{ 
+    "name": "Facebook Graph API", 
+    "description": "Used to make requests to the Facebook Graph API", 
+    "version": "0.0.1", 
+    "author": "Tim Marshall <timothyjmarhall@gmail.com>",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/tmarshall/Facebook-Graph-API.git"
+    },
+    "bugs": {  }, 
+    "os": [ "osx", "linux" ], 
+    "directories": {  }, 
+    "main": "main", 
+    "dependencies" : { 
+        "request": "*"
+    },
+    "engines": { 
+        "node" : ">=0.4.8" 
+    },
+    "bugs": { 
+        "url" : "http://github.com/tmarshall/Facebook-Graph-API/issues" 
+    },
+    "licenses": [{
+        "type": "MIT",
+        "url": "http://github.com/tmarshall/Facebook-Graph-API/raw/master/LICENSE"
+    }]
+}
