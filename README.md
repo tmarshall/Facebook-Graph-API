@@ -11,7 +11,7 @@ There's likely other perfectly good modules out there to fetch data from the Fac
 
 You can make requests to the following:
 
-`accounts`, `achievements`, `activities`, `adaccounts`, `albums`, `apprequests`, `books`, `checkins`, `comments`, `events`, `family`, `feed`, `friendlists`, `friendrequests`, `friends`, `games`, `groups`home`, `inbox`, `insights`, `interests`, `likes`, `links`, `movies`, `music`, `mutualfriends`, `notes`, `notifications`, `outbox`, `payments`, `permissions`, `photos`, `picture`, `posts`, `questions`, `scores`, `statuses`, `subscribers`, `subscriptions`, `tagged`, `television`, `threads`, `updates`, `user`, `videos`
+`accounts`, `achievements`, `activities`, `adaccounts`, `albums`, `apprequests`, `books`, `checkins`, `comments`, `events`, `family`, `feed`, `friendlists`, `friendrequests`, `friends`, `games`, `groups`, `home`, `inbox`, `insights`, `interests`, `likes`, `links`, `movies`, `music`, `mutualfriends`, `notes`, `notifications`, `outbox`, `payments`, `permissions`, `photos`, `picture`, `posts`, `questions`, `scores`, `statuses`, `subscribers`, `subscriptions`, `tagged`, `television`, `threads`, `updates`, `user`, `videos`
 
 Most of these are documented on [Facebook's Developers Page](http://developers.facebook.com/docs/reference/api/).
 
