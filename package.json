@@ -1,5 +1,5 @@
 { 
-    "name": "Facebook Graph API", 
+    "name": "Facebook_Graph_API", 
     "description": "Used to make requests to the Facebook Graph API", 
     "version": "0.0.1", 
     "author": "Tim Marshall <timothyjmarhall@gmail.com>",
