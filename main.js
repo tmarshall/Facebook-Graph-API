@@ -113,7 +113,6 @@ User.prototype.get = function(toGet, callback) {
 
 		this[toGet[i]](function(err) {
 			if (err) firstErr = firstErr || err
-			console.log('got one')
 			if (++finished === l) callback(firstErr, lex)
 		})
 	}
