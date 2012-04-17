@@ -73,3 +73,11 @@ facebookUser.get(['likes', 'feed', 'friends'], function(err, facebookUser) {
 	console.dir(facebookUser.data)
 });
 ```
+
+## Installing
+
+You can either pull the code from here, or install via [NPM](http://npmjs.org/)
+
+```
+npm install Facebook_Graph_API
+```
