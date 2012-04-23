@@ -1,6 +1,7 @@
 var 
 	util = require('util'),
 	request = require('request'),
+	querystring = require('querystring'),
 	nonIdBasedConnection = [ 'permissions', 'picture', 'user' ],
 	connections
 
@@ -9,16 +10,24 @@ function graph() {
 }
 
 function connection(kind) {
-	return function(id, accessToken, callback) {
+	return function(id, accessToken, a, b) {
 		var 
 			lex = this,
-			isNonIdBased = ~nonIdBasedConnection.indexOf(kind)
+			isUser = this instanceof User,
+			isNonIdBased = ~nonIdBasedConnection.indexOf(kind),
+			options, callback
 
-		if (this instanceof User) callback = arguments[0], id = this.id, accessToken = this.accessToken, this.data[kind] = this.data[kind] || isNonIdBased ? null : {}
+		a = isUser ? arguments[0] : a,
+		b = isUser ? arguments[1] : b 
+
+		options = a && a.toString() === '[object Object]' ? a : false,
+		callback = typeof a === 'function' ? a : b
+
+		if (this instanceof User) id = this.id, accessToken = this.accessToken, this.data[kind] = this.data[kind] || (isNonIdBased ? null : {})
 
 		if (typeof callback != 'function') throw 'No callback given for #' + kind + '()'
 
-		request('https://graph.facebook.com/' + id + (kind === 'user' ? '' : '/' + kind) + '?access_token=' + accessToken, function(err, res, body) {
+		request('https://graph.facebook.com/' + id + (kind === 'user' ? '' : '/' + kind) + '?access_token=' + accessToken + (options === false ? '' : '&' + querystring.stringify(options)), function(err, res, body) {
 			var i, l
 
 			try {
@@ -27,7 +36,9 @@ function connection(kind) {
 
 			if (lex instanceof User) {
 				if (isNonIdBased) lex.data[kind] = typeof body == 'string' ? body : Array.isArray(body.data) ? body.data[0] : body.data ? body.data : body
-				else if (Array.isArray(body.data)) for (i = 0, l = body.data.length; i < l; i++) lex.data[kind][body.data[i].id] = body.data[i]
+				else if (Array.isArray(body.data)) {
+					for (i = 0, l = body.data.length; i < l; i++) lex.data[kind][body.data[i].id] = body.data[i]
+				}
 			}
 
 			callback(err, res, body)

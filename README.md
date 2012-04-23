@@ -1,4 +1,4 @@
-Facebook Call API 0.0.1
+Facebook Call API 0.0.2
 =======================
 
 ## Purpose
@@ -22,6 +22,17 @@ var facebookGraphApi = require('facebook-graph-api')
 var graph = new facebookGraphApi()
 
 graph.likes('user_id', 'access_token', function(err, response, body) {
+	console.dir(body)
+})
+```
+
+If you need to pass a parameter like `limit` or `fields' then pass them as an `{}` object, just before the callback. 
+
+```js
+graph.likes('user_id', 'access_token', {
+	limit: 10,
+	fields: [ 'id', 'name' ]
+}, function(err, response, body) {
 	console.dir(body)
 })
 ```
@@ -76,7 +87,7 @@ facebookUser.get(['likes', 'feed', 'friends'], function(err, facebookUser) {
 
 ## Installing
 
-You can either pull the code from here, or install via [npm](http://npmjs.org/)
+The easiest way to install is via [npm](http://npmjs.org/)
 
 ```
 npm install Facebook_Graph_API
