@@ -62,7 +62,7 @@ facebookUser = new facebookGraphApi.User('user_id', 'access_token')
 Now you can make the same requests avaiable in `graph`, as shown above, but with a `User` instance you only need to pass the callback.
 
 ```js
-facebookUser.likes(function(err, response, body) {
+facebookUser.likes(function(err, response, body, paging) {
 	console.dir(body)
 })
 ```
@@ -70,7 +70,7 @@ facebookUser.likes(function(err, response, body) {
 The callback receives the same arguments as the previous example. Though, in this case, the data returned is also stored in `facebookUser.data`. If you make a `likes` request, then the data from the call will be stored in `facebookUser.data.likes`.
 
 ```js
-facebookUser.likes(function(err, response, body) {
+facebookUser.likes(function(err, response, body, paging) {
 	console.dir(body)
 
 	// is equivalent to
