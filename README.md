@@ -26,7 +26,7 @@ graph.likes('user_id', 'access_token', function(err, response, body, paging) {
 })
 ```
 
-If you need to pass an option like `limit` or `fields' then pass them as an `{}` object, just before the callback. 
+If you need to pass an option like `limit` or `fields` then pass them as an `{}` object, just before the callback. 
 
 ```js
 graph.likes('user_id', 'access_token', {
