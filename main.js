@@ -3,24 +3,38 @@ var
 	request = require('request'),
 	querystring = require('querystring'),
 	nonIdBasedConnection = [ 'permissions', 'picture', 'user' ],
-	connections
+	connections,
+	preQueryString = /.*\?/,
+	toString = Object.prototype.toString
 
 function graph() {
 	return this
 }
 
+function prepOptions(options) {
+	var
+		key,
+		prepped = {}
+
+	// facebook using seconds, not ms
+	for (key in options) prepped[key] = toString.call(options[key]) === '[object Date]' ? Math.floor((+options[key] + 1) / 1000) : options[key]
+	
+	return prepped
+}
+
 function connection(kind) {
-	return function(id, accessToken, a, b) {
+	return function connfunc(id, accessToken, a, b) {
 		var 
 			lex = this,
 			isUser = this instanceof User,
 			isNonIdBased = ~nonIdBasedConnection.indexOf(kind),
-			options, callback
+			options, callback,
+			pagingFunc
 
 		a = isUser ? arguments[0] : a,
 		b = isUser ? arguments[1] : b 
 
-		options = a && a.toString() === '[object Object]' ? a : false,
+		options = a && toString.call(a) === '[object Object]' ? prepOptions(a) : false,
 		callback = typeof a === 'function' ? a : b
 
 		if (this instanceof User) id = this.id, accessToken = this.accessToken, this.data[kind] = this.data[kind] || (isNonIdBased ? null : {})
@@ -28,20 +42,30 @@ function connection(kind) {
 		if (typeof callback != 'function') throw 'No callback given for #' + kind + '()'
 
 		request('https://graph.facebook.com/' + id + (kind === 'user' ? '' : '/' + kind) + '?access_token=' + accessToken + (options === false ? '' : '&' + querystring.stringify(options)), function(err, res, body) {
-			var i, l
+			var 
+				i, l, key,
+				paging = {}
 
 			try {
 				body = JSON.parse(body)
-			} catch(e) { }
+			} catch(e) {}
 
-			if (lex instanceof User) {
+			if (isUser) {
 				if (isNonIdBased) lex.data[kind] = typeof body == 'string' ? body : Array.isArray(body.data) ? body.data[0] : body.data ? body.data : body
-				else if (Array.isArray(body.data)) {
-					for (i = 0, l = body.data.length; i < l; i++) lex.data[kind][body.data[i].id] = body.data[i]
-				}
+				else if (Array.isArray(body.data)) for (i = 0, l = body.data.length; i < l; i++) lex.data[kind][body.data[i].id] = body.data[i]
 			}
 
-			callback(err, res, body)
+			if (body.paging) {
+				pagingFunc = function(callback) {
+					var pagingOptions = querystring.parse(body.paging[this].replace(preQueryString, ''))
+					delete pagingOptions.access_token
+					connfunc.apply(lex, (isUser ? [ ] : [ id, accessToken ]).concat([ pagingOptions, callback ]))
+				}
+
+				for (key in body.paging) paging[key] = pagingFunc.bind(key)
+			}
+
+			callback(err, res, body, paging)
 		})
 		
 		return this
@@ -109,12 +133,19 @@ function User(id, accessToken) {
 }
 util.inherits(User, graph)
 
-User.prototype.get = function(toGet, callback) {
+User.prototype.get = function(toGet, a, b) {
 	var 
 		lex = this,
 		i = 0, l = toGet.length, 
 		finished = 0, 
-		firstErr
+		firstErr,
+		getCallback = function(err) {
+			if (err) firstErr = firstErr || err
+			if (++finished === l) callback(firstErr, lex)
+		}
+
+	options = a && toString.call(a) === '[object Object]' ? prepOptions(a) : false,
+	callback = typeof a === 'function' ? a : b
 
 	if (!Array.isArray(toGet) || toGet.length === 0) throw 'Must supply at least one connection to \'get\''
 	if (typeof callback != 'function') throw 'No callback given for #get()'
@@ -122,10 +153,7 @@ User.prototype.get = function(toGet, callback) {
 	for (; i < l; i++) {
 		if (!~connections.indexOf(toGet[i])) throw toGet[i] + ' is not a valid \'connection\' type'
 
-		this[toGet[i]](function(err) {
-			if (err) firstErr = firstErr || err
-			if (++finished === l) callback(firstErr, lex)
-		})
+		this[toGet[i]].apply(lex, (options ? [ options ] : [ ]).concat([ getCallback ]))
 	}
 }
 

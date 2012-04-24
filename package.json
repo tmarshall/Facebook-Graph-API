@@ -1,7 +1,7 @@
 { 
     "name": "Facebook_Graph_API", 
     "description": "Used to make requests to the Facebook Graph API", 
-    "version": "0.0.2", 
+    "version": "0.0.3", 
     "author": "Tim Marshall <timothyjmarhall@gmail.com>",
     "repository": {
         "type": "git",
