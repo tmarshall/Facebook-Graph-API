@@ -86,7 +86,7 @@ Paging isn't available from a `get`.
 ```js
 facebookUser.get(['likes', 'feed', 'friends'], function(err, facebookUser) {
 	console.dir(facebookUser.data)
-});
+})
 ```
 
 Also, similar to other requests, you can send an options object.
@@ -94,7 +94,7 @@ Also, similar to other requests, you can send an options object.
 ```js
 facebookUser.get(['likes', 'feed', 'friends'], { limit: 1000 }, function(err, facebookUser) {
 	console.dir(facebookUser.data)
-});
+})
 ```
 
 ## Paging
