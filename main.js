@@ -154,6 +154,7 @@ util.inherits(User, graph)
 !function() {
 	var noUser = ['', '']
 
+	// these methods will bypass the 'id' and 'accessToken' normally required
 	;[
 		'search'
 	].forEach(function(kind) {
