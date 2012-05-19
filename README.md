@@ -142,7 +142,7 @@ Searching public data is achieved by calling the `search` method.
 
 ```js
 graph.search('user_id', 'access_token', {
-	q: 'today i ',
+	q: 'today',
 	type: 'post'
 }, function(err, response, body, paging) {
 	console.dir(body)
@@ -152,7 +152,7 @@ graph.search('user_id', 'access_token', {
 
 User.search({
 	q: 'election',
-	type: 'today i '
+	type: 'today'
 }, function(err, response, body, paging) {
 	console.dir(body)
 })
@@ -162,7 +162,7 @@ The search on `graph` and `User` both search public data on Facebook. If you wan
 
 ```js
 graph.posts('user_id', 'access_token', {
-	q: 'today i '
+	q: 'fridge'
 }, function(err, response, body, paging) {
 	console.dir(body)
 })
@@ -170,7 +170,7 @@ graph.posts('user_id', 'access_token', {
 // is equivalent to
 
 User.posts({
-	q: 'today i '
+	q: 'fridge'
 }, function(err, response, body, paging) {
 	console.dir(body)
 })
@@ -195,3 +195,5 @@ graph.search({
 	console.dir(body)
 })
 ```
+
+Also worth mentioning is that the query string `q` will not be restricted to exact matches. Facebook matches against case-insensitive tokens. And Facebook does not ensure that tokens are not part of a word. So if you search for `what a day` it may yield a post message like `Day one and I don't know what I'm doing`. 
