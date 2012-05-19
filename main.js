@@ -6,7 +6,8 @@ var
 	nonIdBasedConnection = [ 'permissions', 'picture', 'user' ],
 	connections,
 	preQueryString = /.*\?/,
-	toString = Object.prototype.toString
+	toString = Object.prototype.toString,
+	arraySlice = Array.prototype.slice
 
 function graph() {
 	return this
@@ -23,7 +24,7 @@ function prepOptions(options) {
 	return prepped
 }
 
-function connection(kind) {
+function connection(kind, universal) {
 	// can be:
 	// (id, accessToken, callback)
 	// (id, accessToken, options, callback)
@@ -50,7 +51,7 @@ function connection(kind) {
 		// break everything if what should be a function is, in fact, not quite a function
 		if (typeof callback != 'function') throw 'No callback given for #' + kind + '()'
 
-		request('https://graph.facebook.com/' + id + (kind === 'user' ? '' : '/' + kind) + '?access_token=' + accessToken + (options === false ? '' : '&' + querystring.stringify(options)), function(err, res, body) {
+		request('https://graph.facebook.com' + (universal ? '' : '/' + id) + (kind === 'user' ? '' : '/' + kind) + '?access_token=' + accessToken + (options === false ? '' : '&' + querystring.stringify(options)), function(err, res, body) {
 			var 
 				i, l, key,
 				paging = {}
@@ -87,6 +88,7 @@ function connection(kind) {
 
 // not all of these have been tested yet
 // also may be missing some
+// these 'connections' will be shared by user objects
 ;(connections = [
 	'accounts', // nada
 	'achievements', // developers.facebook.com/docs/achievements
@@ -147,6 +149,21 @@ function User(id, accessToken) {
 	return this
 }
 util.inherits(User, graph)
+
+// now adding graph-specifc (non-user) prototypes
+!function() {
+	var noUser = ['', '']
+
+	;[
+		'search'
+	].forEach(function(kind) {
+		var conn = connection(kind, true)
+
+		graph.prototype[kind] = function() {
+			return conn.apply(this, noUser.concat(arraySlice.call(arguments)))
+		}
+	})
+}()
 
 // function to get multiple 'connections' asynchronously
 User.prototype.get = function(toGet, a, b) {
