@@ -1,4 +1,4 @@
-Facebook Call API 0.0.3
+Facebook Call API 0.0.4
 =======================
 
 ## Purpose
@@ -6,6 +6,14 @@ Facebook Call API 0.0.3
 There's likely other perfectly good modules out there to fetch data from the Facebook Graph. But I wanted to make a module that is quick and easy, allowing for rapid development.
 
 ***Important!*** This is an extremely early version. Not all of the request types are fully tested. YMMV
+
+## Installing
+
+The easiest way to install is via [npm](http://npmjs.org/)
+
+```
+npm install Facebook_Graph_API
+```
 
 ## Making Requests
 
@@ -126,10 +134,64 @@ var fbLaunched = new Date(Date.parse('February 4, 2004'))
 facebookUser.posts({ since: fbLaunched }, callback)
 ```
 
-## Installing
+## Searching
 
-The easiest way to install is via [npm](http://npmjs.org/)
+Facebook offers [ways to search](http://developers.facebook.com/docs/reference/api/#searching) both public data (like posts, places, et cetera) as well as a user's own data.
 
+Searching public data is achieved by calling the `search` method.
+
+```js
+graph.search('user_id', 'access_token', {
+	q: 'today i ',
+	type: 'post'
+}, function(err, response, body, paging) {
+	console.dir(body)
+})
+
+// is equivalent to
+
+User.search({
+	q: 'election',
+	type: 'today i '
+}, function(err, response, body, paging) {
+	console.dir(body)
+})
 ```
-npm install Facebook_Graph_API
+
+The search on `graph` and `User` both search public data on Facebook. If you want to search a user's own posts (or other data), you'd have to do something like this:
+
+```js
+graph.posts('user_id', 'access_token', {
+	q: 'today i '
+}, function(err, response, body, paging) {
+	console.dir(body)
+})
+
+// is equivalent to
+
+User.posts({
+	q: 'today i '
+}, function(err, response, body, paging) {
+	console.dir(body)
+})
+```
+
+Note that on *some* public searches you don't need an auth key. Unlike other methods, the `graph.search` method allows you to ommit the user id and auth key.
+
+```js
+// this will work
+graph.search({
+	q: 'purple',
+	type: 'post'
+}, function(err, response, body, paging) {
+	console.dir(body)
+})
+
+// this will fail, since facebook requires an auth key for this type of search
+graph.search({
+	q: 'purple',
+	type: 'place'
+}, function(err, response, body, paging) {
+	console.dir(body)
+})
 ```
