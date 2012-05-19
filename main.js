@@ -148,11 +148,10 @@ function User(id, accessToken) {
 
 	return this
 }
-util.inherits(User, graph)
 
-// now adding graph-specifc (non-user) prototypes
+// now adding prototypes for methods that do not, necessairly, need a user id and auth key
 !function() {
-	var noUser = ['', '']
+	var noUser = ['', ''], empty = []
 
 	// these methods will bypass the 'id' and 'accessToken' normally required
 	;[
@@ -161,10 +160,14 @@ util.inherits(User, graph)
 		var conn = connection(kind, true)
 
 		graph.prototype[kind] = function() {
-			return conn.apply(this, noUser.concat(arraySlice.call(arguments)))
+			var args = arraySlice.call(arguments)
+
+			return conn.apply(this, (this instanceof User || args.length > 2 ? empty : noUser).concat(arraySlice.call(arguments)))
 		}
 	})
 }()
+
+util.inherits(User, graph)
 
 // function to get multiple 'connections' asynchronously
 User.prototype.get = function(toGet, a, b) {
