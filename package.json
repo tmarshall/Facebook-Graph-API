@@ -1,5 +1,6 @@
 { 
     "name": "Facebook_Graph_API", 
+    "keyword": [ "facebook", "graph", "api" ],
     "description": "Used to make requests to the Facebook Graph API", 
     "version": "0.0.4", 
     "author": "Tim Marshall <timothyjmarhall@gmail.com>",
@@ -8,7 +9,6 @@
         "url": "git://github.com/tmarshall/Facebook-Graph-API.git"
     },
     "bugs": {  }, 
-    "os": [ "osx", "linux" ], 
     "directories": {  }, 
     "main": "main", 
     "dependencies" : { 
